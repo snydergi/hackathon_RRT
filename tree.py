@@ -17,10 +17,12 @@ class Tree():
                 curClosest = self.nodes[i]
         return curClosest
     
-    def distance(q1, q2):
+    def distance(self, q1, q2):
         dist = 0
         for i in range(len(q1.coords)):
-            dist += (q1.coords[i]-q2.coords[i])^2
+            # print(q1.coords)
+            # print(q2.coords)
+            dist += (q1.coords[i]-q2.coords[i])**2
         return dist
 
     def New_Config(self, qn, qr, delta, D):
@@ -28,7 +30,9 @@ class Tree():
         qparams = []
         for i in range(D):
             qparams.append(qn.coords[i] + ((qn.coords[i]-qr.coords[i])/totalMag)*delta)
-        return node.Node.initWithParams(qparams)
+        returnNode = node.Node(D)
+        returnNode.initWithParams(qparams)
+        return returnNode
 
     def addNode(self, qnew):
         self.nodes.append(qnew)
