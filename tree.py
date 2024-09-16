@@ -1,4 +1,6 @@
 #Serves as the overall structure containing all nodes and edges
+import math
+import node
 
 class Tree():
 
@@ -21,3 +23,16 @@ class Tree():
             dist += (q1.coords[i]-q2.coords[i])^2
         return dist
 
+    def New_Config(self, qn, qr, delta, D):
+        totalMag = math.sqrt(self.distance(qn,qr))
+        qparams = []
+        for i in range(D):
+            qparams.append(qn.coords[i] + ((qn.coords[i]-qr.coords[i])/totalMag)*delta)
+        return node.Node.initWithParams(qparams)
+
+    def addNode(self, qnew):
+        self.nodes.append(qnew)
+
+    def addEdge(self, qnear, qnew):
+        self.edges.append((qnear, qnew))
+    
