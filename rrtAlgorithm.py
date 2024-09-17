@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 import imageio as iio
 import node
 import tree
+from matplotlib import collections
 
 #Set Desired Parameters:
 D = 2               #Search Dimensions
-delta = 1           #Branch Length
+delta = 2           #Branch Length
 qparams = [50, 50]  #Starting Node Coords
 xlim = 100          #Axis Limits
 ylim = 100          #Axis Limits
@@ -36,6 +37,7 @@ def Nearest_Node(qrand, G):
 def New_Config(qnear, qrand, delta, G, D):
     return G.New_Config(qnear, qrand, delta, D)
 
+# lines = []
 def visualize(xlim, ylim, G):
     xs = []
     ys = []
@@ -44,6 +46,15 @@ def visualize(xlim, ylim, G):
         ys.append(G.nodes[i].coords[1])
     plt.scatter(xs,ys)
     plt.show()
+#     print(G.edges)
+#     for i in range(len(G.edges)):
+#         lines.append((G.edges[i][0].coords[0],G.edges[i][1].coords[0],G.edges[i][0].coords[1],G.edges[i][1].coords[1]))
 
 G = rrt(qparams, K, delta, D)
 visualize(xlim, ylim, G)
+# fig, ax = plt.subplots()
+# ax.set_xlim(0,xlim)
+# ax.set_ylim(0,ylim)
+# linCol = collections.LineCollection(lines)
+# ax.add_collection(linCol)
+# plt.show()

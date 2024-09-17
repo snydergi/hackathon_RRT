@@ -6,7 +6,7 @@ class Node():
     def __init__(self,D):
         self.coords = []
         for i in range(D):
-            self.coords.append(random.randrange(1,5))
+            self.coords.append(random.random()*100)
 
     def initWithParams(self, qparams):
         self.coords = []

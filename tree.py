@@ -29,7 +29,7 @@ class Tree():
         totalMag = math.sqrt(self.distance(qn,qr))
         qparams = []
         for i in range(D):
-            qparams.append(qn.coords[i] + ((qn.coords[i]-qr.coords[i])/totalMag)*delta)
+            qparams.append(qn.coords[i] + ((qr.coords[i]-qn.coords[i])/totalMag)*delta)
         returnNode = node.Node(D)
         returnNode.initWithParams(qparams)
         return returnNode
