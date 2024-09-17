@@ -38,6 +38,8 @@ class Tree():
         self.nodes.append(qnew)
 
     def addEdge(self, qnear, qnew):
-        ##############Used source [1] to better understand format for LineCollection##########
+        ############## BEGIN_CITATION [2] ##########
+        #Used to better understand format for LineCollection 
         self.edges.append([(qnear.coords[0],qnear.coords[1]),(qnew.coords[0],qnew.coords[1])])
+        ############## END_CITATION [2] ##########
     

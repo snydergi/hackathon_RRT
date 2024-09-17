@@ -14,7 +14,7 @@ delta = 1           #Branch Length
 # qparams = [50, 50]  #Starting Node Coords
 xlim = 100          #Axis Limits
 ylim = 100          #Axis Limits
-K = 1000             #Iterations
+K = 500             #Iterations
 numCircles = 50     #Number of Circles
 circleSizes = 5    #Max Circle Radius, must be >2
 
@@ -33,9 +33,8 @@ while True:
     for i in range(numCircles):
         distance = math.sqrt((startParams[0] - circles[i].center[0])**2 + (startParams[1] - circles[i].center[1])**2)
         if distance <= (circles[i].radius):
+            i = 0
             continue
-        else:
-            break
     break
 
 #Create Valid Goal Params
@@ -45,37 +44,57 @@ while True:
     for i in range(numCircles):
         distance = math.sqrt((goalParams[0] - circles[i].center[0])**2 + (goalParams[1] - circles[i].center[1])**2)
         if distance <= (circles[i].radius):
+            i = 0
             continue
-        else:
-            break
     break
+goalNode = node.Node(D)
+goalNode.initWithParams(goalParams)
 
 def rrt(qparams, K, delta, D):
     G = init(qparams)
-    for i in range(K):
+    iter = 0
+    while True:
+    # for i in range(K):
+        if checkEnd(G):
+            break
         qrand = Random_Config(D)
         qnear = Nearest_Node(qrand, G)
         qnew = New_Config(qnear, qrand, delta, G, D)
-        if checkCollision(qnew,qnear,circles) == False:
+        if checkCollision(qnew,qnear,circles) == True:
             continue
         G.addNode(qnew)
         G.addEdge(qnear, qnew)
+        if iter == K:
+            break
+        iter += 1
     return G
 
+def checkEnd(G):
+    curEnd = G.nodes[-1]
+    if checkCollision(curEnd,goalNode,circles) == False:
+        G.addNode(goalNode)
+        G.addEdge(curEnd,goalNode)
+        return True
+    return False
+
 def checkCollision(qnew, qnear, circles):
-    #############Min Line Distance Equation from [2]#################
+    ############# BEGIN_CITATION [3] #################
     #For reference to source, treating qnear=P1, qnew=P2, circleCenter=P3
     magDist = (qnew.coords[0] - qnear.coords[0])**2 + (qnew.coords[1] - qnear.coords[1])**2
     for i in range(len(circles)):
         circleCenter = circles[i].center
         u = (((circleCenter[0] - qnear.coords[0]) * (qnew.coords[0] - qnear.coords[0])) + ((circleCenter[1] - qnear.coords[1]) * (qnew.coords[1] - qnear.coords[1]))) / magDist
+        ############# END_CITATION [3] #################
+        ############# BEGIN_CITATION [1] ###############
+        u = min(1,max(0,u)) ######Credit Joseph Blom
+        ############# END_CITATION [1] #################
         if u >= 0 or u <= 1:
             ux = qnear.coords[0] + u * (qnew.coords[0] - qnear.coords[0])
             uy = qnear.coords[1] + u * (qnew.coords[1] - qnear.coords[1])
             distSquare = (ux - circleCenter[0])**2 + (uy - circleCenter[1])**2
             if distSquare < (circles[i].radius)**2:
-                return False
-    return True
+                return True
+    return False
 
 def init(qparams):
     qinit = node.Node(D)
@@ -92,11 +111,10 @@ def New_Config(qnear, qrand, delta, G, D):
     return G.New_Config(qnear, qrand, delta, D)
 
 def visualize(xlim, ylim, G):
-    for i in range(len(G.nodes)):
+    for i in range(1, len(G.nodes) - 1):
         xs.append(G.nodes[i].coords[0])
-        ys.append(G.nodes[i].coords[1])
-    plt.show()
-
+        ys.append(G.nodes[i].coords[1])   
+    
 G = rrt(startParams, K, delta, D)
 visualize(xlim, ylim, G)
 fig, ax = plt.subplots()
@@ -104,7 +122,9 @@ ax.set_xlim(0,xlim)
 ax.set_ylim(0,ylim)
 linCol = collections.LineCollection(G.edges)
 ax.add_collection(linCol)
-circCol = collections.PatchCollection(circles)
+circCol = collections.PatchCollection(circles,color='black')
 ax.add_collection(circCol)
 plt.scatter(xs,ys,marker='.')
+plt.scatter(startParams[0],startParams[1],c="Green")
+plt.scatter(goalParams[0],goalParams[1],c='Red',marker='x')
 plt.show()
