@@ -15,8 +15,8 @@ delta = 1           #Branch Length
 # qparams = [50, 50]  #Starting Node Coords
 xlim = 100          #Axis Limits
 ylim = 100          #Axis Limits
-K = 500             #Iterations
-numCircles = 50     #Number of Circles
+K = 1000             #Iterations
+numCircles = 100     #Number of Circles
 circleSizes = 5    #Max Circle Radius, must be >2
 
 xs = []
@@ -33,25 +33,23 @@ for i in range(numCircles):
 
 #Create Valid Start Params
 startParams = []
-while True:
-    startParams = [random.randrange(xlim), random.randrange(ylim)]
-    for i in range(numCircles):
-        distance = math.sqrt((startParams[0] - circles[i].center[0])**2 + (startParams[1] - circles[i].center[1])**2)
-        if distance <= (circles[i].radius):
-            i = 0
-            continue
-    break
-
+startParams = [random.randrange(xlim), random.randrange(ylim)]
+for i in range(numCircles):
+    distance = math.sqrt((startParams[0] - circles[i].center[0])**2 + (startParams[1] - circles[i].center[1])**2)
+    if distance <= (circles[i].radius):
+        i = 0
+        startParams = [random.randrange(xlim), random.randrange(ylim)]
+            
 #Create Valid Goal Params
 goalParams = []
-while True:
-    goalParams = [random.randrange(xlim), random.randrange(ylim)]
-    for i in range(numCircles):
-        distance = math.sqrt((goalParams[0] - circles[i].center[0])**2 + (goalParams[1] - circles[i].center[1])**2)
-        if distance <= (circles[i].radius):
-            i = 0
-            continue
-    break
+goalParams = [random.randrange(xlim), random.randrange(ylim)]
+for i in range(numCircles):
+    distance = math.sqrt((goalParams[0] - circles[i].center[0])**2 + (goalParams[1] - circles[i].center[1])**2)
+    if distance <= (circles[i].radius):
+        i = 0
+        goalParams = [random.randrange(xlim), random.randrange(ylim)]
+
+#Create Goal Node for Checking
 goalNode = node.Node(D)
 goalNode.initWithParams(goalParams,0)
 
