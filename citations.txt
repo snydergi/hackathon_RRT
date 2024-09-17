@@ -1,0 +1,2 @@
+Worked alone.
+[1] "matplotlib - In python, drawing a list of line segments given their indices - Stack Overflow", Stackoverflow, 21 Jan. 2016. Available: https://stackoverflow.com/questions/34934414/in-python-drawing-a-list-of-line-segments-given-their-indices. [Accessed 16 September. 2024].

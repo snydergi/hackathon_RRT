@@ -13,6 +13,9 @@ xlim = 100          #Axis Limits
 ylim = 100          #Axis Limits
 K = 500             #Iterations
 
+xs = []
+ys = []
+
 def rrt(qparams, K, delta, D):
     G = init(qparams)
     for i in range(K):
@@ -37,24 +40,18 @@ def Nearest_Node(qrand, G):
 def New_Config(qnear, qrand, delta, G, D):
     return G.New_Config(qnear, qrand, delta, D)
 
-# lines = []
 def visualize(xlim, ylim, G):
-    xs = []
-    ys = []
     for i in range(len(G.nodes)):
         xs.append(G.nodes[i].coords[0])
         ys.append(G.nodes[i].coords[1])
-    plt.scatter(xs,ys)
     plt.show()
-#     print(G.edges)
-#     for i in range(len(G.edges)):
-#         lines.append((G.edges[i][0].coords[0],G.edges[i][1].coords[0],G.edges[i][0].coords[1],G.edges[i][1].coords[1]))
 
 G = rrt(qparams, K, delta, D)
 visualize(xlim, ylim, G)
-# fig, ax = plt.subplots()
-# ax.set_xlim(0,xlim)
-# ax.set_ylim(0,ylim)
-# linCol = collections.LineCollection(lines)
-# ax.add_collection(linCol)
-# plt.show()
+fig, ax = plt.subplots()
+ax.set_xlim(0,xlim)
+ax.set_ylim(0,ylim)
+linCol = collections.LineCollection(G.edges)
+ax.add_collection(linCol)
+plt.scatter(xs,ys)
+plt.show()
