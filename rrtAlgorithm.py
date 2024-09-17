@@ -5,6 +5,7 @@ import node
 import tree
 from matplotlib import collections
 from matplotlib import patches
+from matplotlib import lines
 import random
 import math
 
@@ -20,6 +21,10 @@ circleSizes = 5    #Max Circle Radius, must be >2
 
 xs = []
 ys = []
+
+path = []
+pathxs = []
+pathys = []
 
 #Create Circle Obstacles
 circles = []
@@ -48,7 +53,7 @@ while True:
             continue
     break
 goalNode = node.Node(D)
-goalNode.initWithParams(goalParams)
+goalNode.initWithParams(goalParams,0)
 
 def rrt(qparams, K, delta, D):
     G = init(qparams)
@@ -72,6 +77,7 @@ def rrt(qparams, K, delta, D):
 def checkEnd(G):
     curEnd = G.nodes[-1]
     if checkCollision(curEnd,goalNode,circles) == False:
+        goalNode.initWithParams(goalParams, curEnd)
         G.addNode(goalNode)
         G.addEdge(curEnd,goalNode)
         return True
@@ -98,7 +104,7 @@ def checkCollision(qnew, qnear, circles):
 
 def init(qparams):
     qinit = node.Node(D)
-    qinit.initWithParams(qparams)
+    qinit.initWithParams(qparams,0)
     return tree.Tree(qinit)
 
 def Random_Config(D):
@@ -113,9 +119,21 @@ def New_Config(qnear, qrand, delta, G, D):
 def visualize(xlim, ylim, G):
     for i in range(1, len(G.nodes) - 1):
         xs.append(G.nodes[i].coords[0])
-        ys.append(G.nodes[i].coords[1])   
+        ys.append(G.nodes[i].coords[1])
+    for i in range(len(path)):
+        pathxs.append(path[i].coords[0])
+        pathys.append(path[i].coords[1])   
     
+def findPath(G):
+    path.append(G.nodes[-1])
+    for i in range(len(G.nodes)):
+        if path[-1].parent != 0:
+            path.append(path[-1].parent)
+        else:
+            break
+
 G = rrt(startParams, K, delta, D)
+findPath(G)
 visualize(xlim, ylim, G)
 fig, ax = plt.subplots()
 ax.set_xlim(0,xlim)
@@ -125,6 +143,11 @@ ax.add_collection(linCol)
 circCol = collections.PatchCollection(circles,color='black')
 ax.add_collection(circCol)
 plt.scatter(xs,ys,marker='.')
-plt.scatter(startParams[0],startParams[1],c="Green")
+plt.scatter(pathxs,pathys,c='Red',marker='.')
+plt.scatter(startParams[0],startParams[1],c="Green",marker='o')
 plt.scatter(goalParams[0],goalParams[1],c='Red',marker='x')
+pathLine = lines.Line2D(pathxs,pathys,color='red')
+ax.add_line(pathLine)
+figManager = plt.get_current_fig_manager()
+figManager.resize(1000,1000)
 plt.show()
